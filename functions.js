@@ -71,8 +71,46 @@ const getUserData = () => {
     });
 };
 
+const getUserIdData = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const fileData = await getFileData();
+
+            if (fileData?.is_success) {
+                // Find the item by UUID
+                const item = fileData.data.find(recordid => recordid.uuid === userId);
+
+                // If item found, resolve with the item data
+                if (item) {
+                    resolve({
+                        message: "User data retrieved successfully",
+                        data: item // Return only the item data
+                    });
+                } else {
+                    resolve({
+                        message: `No user found with ID ${userId}`,
+                        data: null
+                    });
+                }
+            } else {
+                resolve({
+                    message: "User data not retrieved",
+                    data: null
+                });
+            }
+        } catch (error) {
+            reject({
+                message: "Error retrieving user data",
+                error: error.message
+            });
+        }
+    });
+}
+
+
 
 module.exports = {
     InsertUserData,
-    getUserData
+    getUserData,
+    getUserIdData
 };
