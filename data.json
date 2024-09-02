@@ -1,0 +1,16 @@
+[
+  {
+    "uuid": "172ac4ba-b8c3-4fb6-8a80-e8795c30c31f",
+    "first_name": "stalin",
+    "age": "75",
+    "last_name": "K",
+    "country": "Ind"
+  },
+  {
+    "uuid": "711ae5bb-fa16-41d2-a0a3-5a49a93f4fa3",
+    "first_name": "Thilak",
+    "age": "175",
+    "last_name": "V",
+    "country": "Ind"
+  }
+]
