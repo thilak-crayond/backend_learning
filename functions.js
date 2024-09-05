@@ -1,5 +1,6 @@
 const { generateUUID, getFileData, writeFileData } = require('./utils');
 
+// insert an user data 
 const InsertUserData = ({
     first_name,
     age,
@@ -46,6 +47,7 @@ const InsertUserData = ({
     });
 };
 
+// get a user data 
 const getUserData = () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -71,6 +73,7 @@ const getUserData = () => {
     });
 };
 
+// get a user with an id
 const getUserIdData = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -107,10 +110,115 @@ const getUserIdData = (userId) => {
     });
 }
 
+// update a user with an id
+const putUserData = (userId, updatedData) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const fileData = await getFileData();
+
+            if (fileData?.is_success) {
+               
+                const itemIndex = fileData?.data?.findIndex(record => record.uuid === userId);
+
+                if (itemIndex === -1) {
+                    resolve({
+                        message: `Item with ID ${userId} not found`,
+                        data: null
+                    });
+                    return;
+                }
+
+               
+                const updatedItem = {
+                    ...fileData.data[itemIndex], // Keep existing fields
+                    ...updatedData,
+                };
+
+              
+                fileData.data[itemIndex] = updatedItem;
+
+                // Write the updated data back to the file
+                const success = await writeFileData(fileData.data);
+
+                if (success) {
+                    resolve({
+                        message: "Item updated successfully",
+                        data: updatedItem
+                    });
+                } else {
+                    resolve({
+                        message: "Failed to update item",
+                        data: null
+                    });
+                }
+            } else {
+                resolve({
+                    message: "Failed to retrieve data",
+                    data: null
+                });
+            }
+        } catch (error) {
+            reject({
+                message: "Error updating user data",
+                error: error.message
+            });
+        }
+    });
+};
+
+// delete a user data with an id
+const deleteUserData = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const fileData = await getFileData(); // Fetch current data
+
+            if (fileData?.is_success) {
+                // Check if the item exists by finding its index
+                const itemIndex = fileData?.data?.findIndex(record => record.uuid === userId);
+
+                if (itemIndex === -1) {
+                    resolve({
+                        message: `Item with ID ${userId} not found`,
+                    });
+                    return;
+                }
+
+                // Filter out the item to delete it
+                const updatedData = fileData.data.filter(record => record.uuid !== userId);
+
+                // Write the updated data back to the file
+                const success = await writeFileData(updatedData);
+
+                if (success) {
+                    resolve({
+                        message: `Item with ID ${userId} deleted successfully`,
+                    });
+                } else {
+                    resolve({
+                        message: "Failed to delete the item",
+                    });
+                }
+            } else {
+                resolve({
+                    message: "Failed to retrieve data",
+                });
+            }
+        } catch (error) {
+            reject({
+                message: "Error retrieving user data",
+                error: error.message,
+            });
+        }
+    });
+};
+
+
 
 
 module.exports = {
     InsertUserData,
     getUserData,
-    getUserIdData
+    getUserIdData,
+    putUserData,
+    deleteUserData
 };
