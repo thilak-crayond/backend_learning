@@ -1,8 +1,12 @@
 const fs = require('fs').promises; // Use the promises API to work with async/await
 
+// fs is an Promises over Callbacks and Cleaner Code with async/await 
+// Better Error Handling and Consistent API
+
+// read a file data 
 const getFileData = async () => {
     try {
-        // data.json is a local db file
+        // data.json is a local db file we connect over a readfile and write file
         // utf8 is a buffer type or format
         const data = await fs.readFile('data.json', 'utf8');
         return {
@@ -18,6 +22,7 @@ const getFileData = async () => {
     }
 };
 
+// write a file data
 const writeFileData = async (content) => {
     try {
         await fs.writeFile('data.json', JSON.stringify(content, null, 2), 'utf8');
